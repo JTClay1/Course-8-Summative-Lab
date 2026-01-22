@@ -1,49 +1,96 @@
-# Course-8-Summative-Lab #
---Python REST API w Flask : Inventory Management System--
+# Course-8 Summative Lab  
+**Python REST API with Flask – Inventory Management System**
 
+## Overview
+This project implements the core back-office logic for a grocery store inventory system.  
+It exposes a Flask-based REST API that allows employees to manage inventory items stored in a mock, in-memory database.
 
-# Summary Breakdown #
-We’re building the bones of a grocery store’s back-office inventory system.
-There’s a simple list of products living in memory (mock database). 
-Employees need to be able to do the following: 
- --Add items
- --look items up
- --update prices
- --update stock
- --delete items
-All the above will be executable through an API. 
+The system supports full CRUD operations, integrates with an external product API for enrichment, and includes a CLI tool for interacting with the API. Unit tests validate functionality and error handling.
 
-When the store only has a barcode or product name, the system can ask an outside service (OpenFoodFacts) for extra details like brand or ingredients and attach that info to the item. 
+---
 
-A CLI tool is just a keyboard-based remote control that sends those same actions to the API. 
+## Core Functionality
+Employees can:
+- Add inventory items
+- View all items or a single item
+- Update item fields (price, stock, etc.)
+- Delete items
 
-Tests exist to prove each action works and doesn’t break when things go wrong.
+All actions are performed through the REST API.
 
+When only a barcode or product name is available, the system can query the OpenFoodFacts API to retrieve additional product details (e.g., brand, ingredients) and attach that data to the inventory item.
 
-# Inventory Fields to be Used #
---id
---name
---barcode
---price
---stock
---details
+A command-line interface (CLI) acts as a keyboard-based controller for sending requests to the API.
 
+---
 
-# Flask Route Structure #
-GET /inventory -> return list of items
-GET /inventory/<id> -> returns one item or 404
-POST /inventory -> creates item, returns created item + 201
-PATCH /inventory/<id> -> update fields, returns updated item
-DELETE /inventory/<id> -> deletes, returns success message or 204
-External Helper:
-   --GET /products/search?barcode=... or GET /products/search?name=...
-   --returns "product details" pulled from OpenFoodFacts (or a clean subset)
+## Inventory Item Structure
+Each inventory item contains the following fields:
 
+- `id`
+- `name`
+- `barcode`
+- `price`
+- `stock`
+- `details` (optional data enriched from OpenFoodFacts)
 
-# CLI Commands that map to Routes #
---list
---show <id>
---add
---update <id>
---delete <id>
---find --barcode <code>/find --name <text>
+Inventory data is stored in memory using a Python list to simulate a database.
+
+---
+
+## API Routes
+
+### Inventory Routes
+- `GET /inventory`  
+  Returns all inventory items.
+
+- `GET /inventory/<id>`  
+  Returns a single item or a 404 if not found.
+
+- `POST /inventory`  
+  Creates a new inventory item.  
+  Returns the created item with status `201`.
+
+- `PATCH /inventory/<id>`  
+  Updates one or more fields on an existing item.  
+  Returns the updated item.
+
+- `DELETE /inventory/<id>`  
+  Deletes an item.  
+  Returns a success message or `204 No Content`.
+
+### External Product Lookup
+- `GET /products/search?barcode=...`
+- `GET /products/search?name=...`
+
+Returns product details retrieved from the OpenFoodFacts API (or a clean subset of the response).
+
+---
+
+## CLI Commands
+The CLI maps directly to API functionality:
+
+- `list`
+- `show <id>`
+- `add`
+- `update <id>`
+- `delete <id>`
+- `find --barcode <code>`
+- `find --name <text>`
+
+---
+
+## Testing
+Unit tests are written using `pytest` and include:
+- API endpoint tests (GET, POST, PATCH, DELETE)
+- CLI command tests
+- Mocked external API interaction tests
+
+---
+
+## Tech Stack
+- Python
+- Flask
+- pytest
+- OpenFoodFacts API
+- Git & GitHub
