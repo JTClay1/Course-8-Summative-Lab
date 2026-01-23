@@ -1,6 +1,6 @@
 # in-memory inventory "database"
 
-inventory = [
+products = [
     {
         "id": 1,
         "name": "Whole Milk",
