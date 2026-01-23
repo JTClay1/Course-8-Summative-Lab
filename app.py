@@ -14,14 +14,11 @@ def get_products():
 
 @app.route("/products/<int:product_id>", methods=["GET"])
 def get_product_by_id(product_id):
-    product = next(
-        (product for product in products if product["id"] == product_id),
-        None
-    )
+    
+    product = next((product for product in products if product["id"] == product_id), None)
+
     if product is None:
-        return jsonify({
-            "error": "Product not found"
-        }), 404
+        return jsonify({"error": "Product not found"}), 404
 
     return jsonify(product), 200
 
@@ -50,6 +47,36 @@ def add_product():
 
     return jsonify(new_product), 201
 
+
+@app.route("/products/<int:product_id>", methods=["PATCH"])
+def update_product(product_id):
+
+    data = request.get_json()
+
+    product = next((product for product in products if product["id"] == product_id), None)
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+    
+    if not data:
+        return jsonify({"error": "No input data provided"}), 400
+    
+    if "name" in data:
+        product["name"] = data["name"]
+    
+    if "barcode" in data:
+        product["barcode"] = data["barcode"]
+
+    if "price" in data:
+        product["price"] = data["price"]
+
+    if "stock" in data:
+        product["stock"] = data["stock"]
+
+    if "details" in data:
+        product["details"] = data["details"]
+    
+    return jsonify(product), 200
 
 
 if __name__ == "__main__":
