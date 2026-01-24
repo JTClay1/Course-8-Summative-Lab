@@ -2,6 +2,7 @@
 Python REST API with Flask – Inventory Management System
 
 Overview
+
 This project implements the core back-office logic for a grocery store inventory system.
 It exposes a Flask-based REST API that allows employees to manage products stored in a mock, in-memory database.
 
