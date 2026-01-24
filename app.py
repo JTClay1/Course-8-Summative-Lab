@@ -1,17 +1,20 @@
 from flask import Flask, jsonify, request
 from data import products
-from services.openfoodfacts import fetch_by_barcode
+from services.openfoodfacts import fetch_by_barcode, fetch_by_name
 
 
 app = Flask(__name__)
+
 
 @app.route("/health", methods=["GET"])
 def health_check():
     return {"status": "ok"}
 
+
 @app.route("/products", methods=["GET"])
 def get_products():
     return jsonify(products), 200
+
 
 
 @app.route("/products/<int:product_id>", methods=["GET"])
@@ -23,6 +26,7 @@ def get_product_by_id(product_id):
         return jsonify({"error": "Product not found"}), 404
 
     return jsonify(product), 200
+
 
 @app.route("/products", methods=["POST"])
 def add_product():
@@ -80,6 +84,7 @@ def update_product(product_id):
     
     return jsonify(product), 200
 
+
 @app.route("/products/<int:product_id>", methods=["DELETE"])
 def delete_product(product_id):
     product = next((p for p in products if p["id"] == product_id), None)
@@ -91,18 +96,27 @@ def delete_product(product_id):
 
     return jsonify({"message": "Product deleted"}), 200
 
+
 @app.route("/products/search", methods=["GET"])
 def search_products():
     barcode = request.args.get("barcode")
+    name = request.args.get("name")
 
-    if not barcode:
-        return jsonify({"error": "barcode query param is required"}), 400
+    if not barcode and not name:
+        return jsonify({"error": "barcode or name query param is required"}), 400
 
-    details = fetch_by_barcode(barcode)
+    # prefer barcode if both are provided
+    if barcode:
+        details = fetch_by_barcode(barcode)
+    else:
+        details = fetch_by_name(name)
+
     if details is None:
         return jsonify({"error": "Product not found"}), 404
 
     return jsonify(details), 200
+
+
 
 @app.route("/products/<int:product_id>/enrich", methods=["PATCH"])
 def enrich_product(product_id):
@@ -125,7 +139,6 @@ def enrich_product(product_id):
 
     product["details"] = details
     return jsonify(product), 200
-
 
 
 if __name__ == "__main__":
