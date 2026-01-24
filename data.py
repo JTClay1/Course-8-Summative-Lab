@@ -3,8 +3,8 @@
 products = [
     {
         "id": 1,
-        "name": "Nutella",
-        "barcode": "3017624010701",
+        "name": "Whole Milk",
+        "barcode": "012000001658",
         "price": 3.49,
         "stock": 24,
         "details": {}
