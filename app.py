@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 from data import products
+from services.openfoodfacts import fetch_by_barcode
+
 
 app = Flask(__name__)
 
@@ -88,6 +90,19 @@ def delete_product(product_id):
     products.remove(product)
 
     return jsonify({"message": "Product deleted"}), 200
+
+@app.route("/products/search", methods=["GET"])
+def search_products():
+    barcode = request.args.get("barcode")
+
+    if not barcode:
+        return jsonify({"error": "barcode query param is required"}), 400
+
+    details = fetch_by_barcode(barcode)
+    if details is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    return jsonify(details), 200
 
 
 if __name__ == "__main__":
