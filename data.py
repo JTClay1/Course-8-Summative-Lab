@@ -1,10 +1,10 @@
-# in-memory inventory "database"
+# in-memory products "database"
 
 products = [
     {
         "id": 1,
-        "name": "Whole Milk",
-        "barcode": "012000001658",
+        "name": "Nutella",
+        "barcode": "3017624010701",
         "price": 3.49,
         "stock": 24,
         "details": {}

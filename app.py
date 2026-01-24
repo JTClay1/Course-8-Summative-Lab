@@ -104,6 +104,29 @@ def search_products():
 
     return jsonify(details), 200
 
+@app.route("/products/<int:product_id>/enrich", methods=["PATCH"])
+def enrich_product(product_id):
+    product = next((p for p in products if p["id"] == product_id), None)
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    barcode = product.get("barcode")
+    if not barcode:
+        return jsonify({"error": "Barcode required to enrich product"}), 400
+
+    try:
+        details = fetch_by_barcode(barcode)
+    except Exception:
+        return jsonify({"error": "External API request failed"}), 502
+
+    if details is None:
+        return jsonify({"error": "External product not found"}), 404
+
+    product["details"] = details
+    return jsonify(product), 200
+
+
 
 if __name__ == "__main__":
     app.run()
